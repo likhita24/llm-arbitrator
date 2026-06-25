@@ -1,0 +1,49 @@
+services:
+  # PostgreSQL database
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: arbitrator
+    ports:
+      - "5432:5432"
+    volumes:
+      # Named volume: postgres data survives docker-compose down
+      # Use "docker-compose down -v" to wipe data for a fresh start
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI backend
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      # Override DATABASE_URL to use the postgres service name (not localhost)
+      # Docker containers talk to each other via service names, not localhost
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres:5432/arbitrator
+      # These come from your .env file at project root
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      # host.docker.internal = your Mac from inside a Docker container
+      # This lets the backend container reach Ollama running on your Mac
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-llama3.1}
+      CRITIC_MODEL_CLOUD: ${CRITIC_MODEL_CLOUD:-claude-haiku-4-5-20251001}
+      SYNTHESIZER_MODEL_CLOUD: ${SYNTHESIZER_MODEL_CLOUD:-claude-sonnet-4-6}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # Mount source code for hot reload during development
+    volumes:
+      - ./backend:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  postgres_data:
