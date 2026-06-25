@@ -16,8 +16,15 @@ class Settings(BaseSettings):
     critic_model_cloud: str = "claude-haiku-4-5-20251001"
     synthesizer_model_cloud: str = "claude-sonnet-4-6"
 
-    # Database
+    # Database — Railway injects "postgresql://...", asyncpg needs "postgresql+asyncpg://"
     database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/arbitrator"
+
+    @property
+    def async_database_url(self) -> str:
+        url = self.database_url
+        if url.startswith("postgresql://") or url.startswith("postgres://"):
+            url = url.replace("://", "+asyncpg://", 1)
+        return url
 
     # Store as plain string — pydantic-settings v2 tries to JSON-decode List[str]
     # fields before validators run, which breaks "http://localhost:3000" (not valid JSON).
