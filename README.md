@@ -5,6 +5,7 @@ A multi-agent system that evaluates LLM-generated text quality using three paral
 **Demo**
 
 https://github.com/user-attachments/assets/arbitrator_demo.mp4
+https://github.com/user-attachments/assets/e1b0dd30-f8fc-4417-8c73-a96bc2b9518e
 
 ---
 
@@ -163,10 +164,6 @@ llm-arbitrator/
 | `DATABASE_URL` | `postgresql+asyncpg://...` | Postgres connection string |
 | `CORS_ORIGINS` | `http://localhost:3000` | Comma-separated allowed origins |
 
----
 
-## Interview talking points
 
-- **Why LangGraph `Send()` instead of sequential nodes?** — Critics are independent, so parallelism cuts latency from ~3× to ~1× critic latency. `Send()` is LangGraph's fan-out primitive; the `Annotated[List, operator.add]` reducer merges all returned critique lists into one state key.
-- **Why separate `CritiqueData` vs `CritiqueOutput` schemas?** — `with_structured_output()` is confused by `Literal["accuracy"]` fields (the LLM tries to fill them). `CritiqueData` omits `dimension`; the node wraps it into `CritiqueOutput` with dimension set from the function's own parameter.
-- **Why `cors_origins: str` instead of `List[str]`?** — pydantic-settings v2 JSON-decodes `List[str]` fields *before* validators run. `http://localhost:3000` is not valid JSON, so it crashes. String + property split avoids this.
+
