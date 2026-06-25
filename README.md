@@ -4,7 +4,6 @@ A multi-agent system that evaluates LLM-generated text quality using three paral
 
 **Demo**
 
-https://github.com/user-attachments/assets/arbitrator_demo.mp4
 https://github.com/user-attachments/assets/e1b0dd30-f8fc-4417-8c73-a96bc2b9518e
 
 ---
