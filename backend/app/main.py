@@ -1,5 +1,8 @@
+import logging
 import time
 from contextlib import asynccontextmanager
+
+logger = logging.getLogger(__name__)
 
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,8 +23,10 @@ from app.models.schemas import (
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Create tables on startup if they don't exist
-    await init_db()
+    try:
+        await init_db()
+    except Exception as e:
+        logger.error("DB init failed (app will still start): %s", e)
     yield
 
 

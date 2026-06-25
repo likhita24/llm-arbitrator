@@ -19,10 +19,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Now copy the rest of the application code
 COPY . .
 
-# Document that the app listens on port 8000
 EXPOSE 8000
 
-# Start the FastAPI app with uvicorn
-# --host 0.0.0.0 = accept connections from outside the container (required in Docker)
-# --port 8000 = match EXPOSE above
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Railway sets $PORT dynamically; fall back to 8000 for local Docker
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
