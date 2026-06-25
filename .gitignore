@@ -37,7 +37,5 @@ postgres_data/
 # Logs
 *.log
 
-# Demo artifacts (large files)
-demo/
+# Large generated artifacts (exclude from VCS)
 *.mov
-*.mp4
