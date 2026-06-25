@@ -2,7 +2,10 @@
 
 A multi-agent system that evaluates LLM-generated text quality using three parallel AI critics and a synthesizer that produces a final confidence-scored verdict.
 
-**Demo**
+**Live demo:** https://frontend-ten-bice-35.vercel.app  
+**API:** https://llm-arbitrator-production.up.railway.app/api/health
+
+**Demo video**
 
 https://github.com/user-attachments/assets/e1b0dd30-f8fc-4417-8c73-a96bc2b9518e
 
